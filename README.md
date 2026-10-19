@@ -4,6 +4,16 @@ A responsive, real-time IoT monitoring web dashboard simulating and visualizing 
 
 ---
 
+## 🔗 Live Website Demo
+
+* 🚀 **Official Live Website (GitHub Pages)**:  
+  👉 **[https://bavanasri-cse.github.io/IoT-Sensor-Dashboard/](https://bavanasri-cse.github.io/IoT-Sensor-Dashboard/)**
+
+* 📱 **Smart Toys Cloud Architecture Mirror**:  
+  👉 **[https://bavanasri-cse.github.io/Smart-Toys-Cloud-Architecture/](https://bavanasri-cse.github.io/Smart-Toys-Cloud-Architecture/)**
+
+---
+
 ## 🚀 Features
 
 - **📊 Live Telemetry & Dynamic Charts**:
