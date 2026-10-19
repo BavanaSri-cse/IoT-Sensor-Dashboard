@@ -2,7 +2,10 @@
 IoT Sensor Dashboard - Live Website Link
 ===================================================================
 
-Official Live Website:
+Active Live Website:
+https://e67db6d91b77a2.lhr.life/
+
+GitHub Pages Mirror:
 https://bavanasri-cse.github.io/IoT-Sensor-Dashboard/
 
 GitHub Repository:

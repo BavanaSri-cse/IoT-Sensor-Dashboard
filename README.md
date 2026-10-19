@@ -6,7 +6,10 @@ A responsive, real-time IoT monitoring web dashboard simulating and visualizing 
 
 ## 🔗 Live Website Demo
 
-* 🚀 **Official Live Website (GitHub Pages)**:  
+* 🚀 **Instant Live Website (Tested & Active)**:  
+  👉 **[https://e67db6d91b77a2.lhr.life/](https://e67db6d91b77a2.lhr.life/)**
+
+* 🌐 **GitHub Pages Mirror**:  
   👉 **[https://bavanasri-cse.github.io/IoT-Sensor-Dashboard/](https://bavanasri-cse.github.io/IoT-Sensor-Dashboard/)**
 
 * 📱 **Smart Toys Cloud Architecture Mirror**:  
