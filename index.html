@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Sensor Dashboard – Smart Monitoring System</title>
+  <meta name="description" content="Real-time IoT dashboard monitoring temperature, humidity, soil moisture, GPS location, motion, light, and pressure sensors from Arduino Nano and Raspberry Pi devices." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-orb orb1" aria-hidden="true"></div>
+  <div class="bg-orb orb2" aria-hidden="true"></div>
+  <div class="bg-orb orb3" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2"/>
+            <path d="M8 14h4m4 0h4M14 8v4m0 4v4" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="14" cy="14" r="3" fill="url(#g1)"/>
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#00d4ff"/>
+                <stop offset="1" stop-color="#7c3aed"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">IoT Sensor Dashboard</h1>
+          <p class="brand-sub">Smart Monitoring System</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" role="tablist" aria-label="Dashboard sections">
+        <button class="nav-tab active" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Overview</button>
+        <button class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-agriculture" id="tab-agriculture" data-tab="agriculture">Agriculture</button>
+        <button class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-smart-toy" id="tab-smart-toy" data-tab="smart-toy">Smart Toy</button>
+        <button class="nav-tab" role="tab" aria-selected="false" aria-controls="panel-devices" id="tab-devices" data-tab="devices">Devices</button>
+      </nav>
+
+      <div class="header-status">
+        <span class="status-dot" id="status-dot" aria-label="Live connection status"></span>
+        <span class="status-text" id="status-text">Live</span>
+        <span class="last-update" id="last-update">Just now</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main" role="main">
+
+    <!-- OVERVIEW PANEL -->
+    <section class="tab-panel active" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+
+      <div class="kpi-grid">
+        <div class="kpi-card" id="kpi-temp">
+          <div class="kpi-icon temp-icon" aria-hidden="true">&#127777;&#65039;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Temperature</span>
+            <span class="kpi-value" id="kv-temp">--&deg;C</span>
+            <span class="kpi-badge" id="kb-temp">Sensor 1</span>
+          </div>
+          <svg class="kpi-sparkline" id="spark-temp" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="kpi-card" id="kpi-humidity">
+          <div class="kpi-icon humidity-icon" aria-hidden="true">&#128167;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Humidity</span>
+            <span class="kpi-value" id="kv-humidity">--%</span>
+            <span class="kpi-badge" id="kb-humidity">DHT11</span>
+          </div>
+          <svg class="kpi-sparkline" id="spark-humidity" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="kpi-card" id="kpi-soil">
+          <div class="kpi-icon soil-icon" aria-hidden="true">&#127807;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Soil Moisture</span>
+            <span class="kpi-value" id="kv-soil">--%</span>
+            <span class="kpi-badge" id="kb-soil">Field A</span>
+          </div>
+          <svg class="kpi-sparkline" id="spark-soil" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="kpi-card" id="kpi-pressure">
+          <div class="kpi-icon pressure-icon" aria-hidden="true">&#128309;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Pressure</span>
+            <span class="kpi-value" id="kv-pressure">-- hPa</span>
+            <span class="kpi-badge" id="kb-pressure">BMP280</span>
+          </div>
+          <svg class="kpi-sparkline" id="spark-pressure" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="kpi-card" id="kpi-light">
+          <div class="kpi-icon light-icon" aria-hidden="true">&#9728;&#65039;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Light Level</span>
+            <span class="kpi-value" id="kv-light">-- lux</span>
+            <span class="kpi-badge" id="kb-light">LDR</span>
+          </div>
+          <svg class="kpi-sparkline" id="spark-light" viewBox="0 0 100 30" preserveAspectRatio="none"></svg>
+        </div>
+
+        <div class="kpi-card" id="kpi-motion">
+          <div class="kpi-icon motion-icon" aria-hidden="true">&#128225;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Motion</span>
+            <span class="kpi-value" id="kv-motion">--</span>
+            <span class="kpi-badge" id="kb-motion">PIR</span>
+          </div>
+          <div class="motion-indicator" id="motion-indicator" aria-label="Motion state indicator"></div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card chart-wide">
+          <div class="chart-header">
+            <h2 class="chart-title">Temperature &amp; Humidity &ndash; 24h Trend</h2>
+            <div class="chart-controls">
+              <button class="ctrl-btn active" id="btn-1h" data-range="1h">1H</button>
+              <button class="ctrl-btn" id="btn-6h" data-range="6h">6H</button>
+              <button class="ctrl-btn" id="btn-24h" data-range="24h">24H</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="chart-temp-humidity" aria-label="Temperature and humidity trend chart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Sensor Distribution</h2>
+          </div>
+          <div class="chart-wrap chart-wrap-sm">
+            <canvas id="chart-donut" aria-label="Sensor activity distribution donut chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <div class="chart-card alerts-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Live Alerts</h2>
+            <span class="alert-count" id="alert-count">0</span>
+          </div>
+          <ul class="alert-list" id="alert-list" aria-live="polite" aria-label="Live sensor alerts">
+            <li class="alert-empty">No alerts yet&hellip;</li>
+          </ul>
+        </div>
+
+        <div class="chart-card gps-card">
+          <div class="chart-header">
+            <h2 class="chart-title">GPS Location</h2>
+            <span class="gps-badge">Live</span>
+          </div>
+          <div class="gps-map" id="gps-map" aria-label="GPS location map">
+            <div class="gps-grid-lines" aria-hidden="true"></div>
+            <div class="gps-dot-wrapper" id="gps-dot-wrapper">
+              <div class="gps-dot" id="gps-dot" aria-hidden="true">
+                <div class="gps-ping"></div>
+              </div>
+            </div>
+            <div class="gps-coords" id="gps-coords">Lat: 12.9716&deg; N &nbsp;|&nbsp; Lon: 77.5946&deg; E</div>
+          </div>
+        </div>
+
+        <div class="chart-card pressure-chart-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Pressure &amp; Light</h2>
+          </div>
+          <div class="chart-wrap chart-wrap-sm">
+            <canvas id="chart-pressure-light" aria-label="Pressure and light sensor bar chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGRICULTURE PANEL -->
+    <section class="tab-panel" id="panel-agriculture" role="tabpanel" aria-labelledby="tab-agriculture">
+      <div class="agri-header-banner">
+        <div class="agri-banner-text">
+          <h2>Smart Agriculture System</h2>
+          <p>NodeMCU ESP8266 &rarr; ThingSpeak Cloud &rarr; Relay &rarr; Water Pump</p>
+        </div>
+        <div class="agri-pump-status">
+          <span class="pump-label">Water Pump</span>
+          <button class="pump-toggle" id="pump-toggle" aria-pressed="false">
+            <span class="pump-toggle-circle"></span>
+          </button>
+          <span class="pump-state" id="pump-state">OFF</span>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card agri-kpi">
+          <div class="kpi-icon" aria-hidden="true">&#127807;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Soil Moisture</span>
+            <span class="kpi-value" id="agri-soil">68%</span>
+            <div class="progress-bar"><div class="progress-fill soil-fill" id="soil-progress" style="width:68%"></div></div>
+          </div>
+        </div>
+        <div class="kpi-card agri-kpi">
+          <div class="kpi-icon" aria-hidden="true">&#127777;&#65039;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Temperature</span>
+            <span class="kpi-value" id="agri-temp">28&deg;C</span>
+            <div class="progress-bar"><div class="progress-fill temp-fill" id="temp-progress" style="width:56%"></div></div>
+          </div>
+        </div>
+        <div class="kpi-card agri-kpi">
+          <div class="kpi-icon" aria-hidden="true">&#128167;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Humidity</span>
+            <span class="kpi-value" id="agri-humidity">72%</span>
+            <div class="progress-bar"><div class="progress-fill humidity-fill" id="humidity-progress" style="width:72%"></div></div>
+          </div>
+        </div>
+        <div class="kpi-card agri-kpi">
+          <div class="kpi-icon" aria-hidden="true">&#9889;</div>
+          <div class="kpi-body">
+            <span class="kpi-label">Relay Status</span>
+            <span class="kpi-value" id="agri-relay">Active</span>
+            <div class="relay-indicator" id="relay-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card chart-wide">
+          <div class="chart-header">
+            <h2 class="chart-title">Field Sensor Trend &ndash; 12h</h2>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="chart-agri-trend" aria-label="Agriculture sensor 12-hour trend"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <h2 class="chart-title">Irrigation Events</h2>
+          </div>
+          <div class="chart-wrap chart-wrap-sm">
+            <canvas id="chart-irrigation" aria-label="Irrigation event bar chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-visual">
+        <div class="pipeline-step active" id="pipe-sensor">
+          <div class="pipe-icon">&#128225;</div>
+          <span>Sensors</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">&rarr;</div>
+        <div class="pipeline-step active" id="pipe-nodemcu">
+          <div class="pipe-icon">&#128268;</div>
+          <span>NodeMCU ESP8266</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">&rarr;</div>
+        <div class="pipeline-step active" id="pipe-cloud">
+          <div class="pipe-icon">&#9729;&#65039;</div>
+          <span>ThingSpeak Cloud</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">&rarr;</div>
+        <div class="pipeline-step" id="pipe-relay">
+          <div class="pipe-icon">&#9889;</div>
+          <span>Relay</span>
+        </div>
+        <div class="pipeline-arrow" aria-hidden="true">&rarr;</div>
+        <div class="pipeline-step" id="pipe-pump">
+          <div class="pipe-icon">&#128166;</div>
+          <span>Water Pump</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SMART TOY PANEL -->
+    <section class="tab-panel" id="panel-smart-toy" role="tabpanel" aria-labelledby="tab-smart-toy">
+      <div class="toy-layout">
+        <div class="toy-column">
+          <h2 class="section-title">Smart Toy 1 &mdash; Teddy Bear</h2>
+          <div class="toy-card" id="toy1-card">
+            <div class="toy-emoji" aria-hidden="true">&#129528;</div>
+            <div class="toy-sensors">
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#127777;&#65039; Temperature</span>
+                <span class="toy-sensor-val" id="toy1-temp">28&deg;C</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128225; Motion</span>
+                <span class="toy-sensor-val" id="toy1-motion">Detected</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#127908; Microphone</span>
+                <span class="toy-sensor-val" id="toy1-mic">Active</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128205; Location</span>
+                <span class="toy-sensor-val" id="toy1-gps">Home</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128267; Battery</span>
+                <div class="battery-bar-wrap">
+                  <div class="battery-bar"><div class="battery-fill" id="toy1-bat" style="width:78%"></div></div>
+                  <span id="toy1-bat-pct">78%</span>
+                </div>
+              </div>
+            </div>
+            <div class="toy-status online" id="toy1-status">&#9679; Online</div>
+          </div>
+        </div>
+
+        <div class="toy-column">
+          <h2 class="section-title">Smart Toy 2 &mdash; RC Car</h2>
+          <div class="toy-card" id="toy2-card">
+            <div class="toy-emoji" aria-hidden="true">&#128664;</div>
+            <div class="toy-sensors">
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128309; Pressure</span>
+                <span class="toy-sensor-val" id="toy2-pressure">1013 hPa</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#9728;&#65039; Light</span>
+                <span class="toy-sensor-val" id="toy2-light">420 lux</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128266; Sound</span>
+                <span class="toy-sensor-val" id="toy2-sound">62 dB</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128205; Location</span>
+                <span class="toy-sensor-val" id="toy2-gps">Garden</span>
+              </div>
+              <div class="toy-sensor-row">
+                <span class="toy-sensor-label">&#128267; Battery</span>
+                <div class="battery-bar-wrap">
+                  <div class="battery-bar"><div class="battery-fill low-bat" id="toy2-bat" style="width:45%"></div></div>
+                  <span id="toy2-bat-pct">45%</span>
+                </div>
+              </div>
+            </div>
+            <div class="toy-status online" id="toy2-status">&#9679; Online</div>
+          </div>
+        </div>
+
+        <div class="toy-column">
+          <h2 class="section-title">Parent Mobile App</h2>
+          <div class="mobile-mock" aria-label="Parent mobile app mockup">
+            <div class="mobile-screen">
+              <div class="mobile-header">
+                <span>&#129528; Smart Toys</span>
+                <span class="mobile-time" id="mobile-time">20:21</span>
+              </div>
+              <div class="mobile-card">
+                <div class="mobile-row"><span>&#128308; Toy Status</span><span class="mobile-val online-val" id="mob-status">Online</span></div>
+                <div class="mobile-row"><span>&#127777;&#65039; Temperature</span><span class="mobile-val" id="mob-temp">28&deg;C</span></div>
+                <div class="mobile-row"><span>&#128205; Location</span><span class="mobile-val" id="mob-loc">Home</span></div>
+                <div class="mobile-row"><span>&#128267; Battery</span><span class="mobile-val" id="mob-bat">78%</span></div>
+              </div>
+              <div class="mobile-alert-banner" id="mob-alert">
+                &#10003; All toys safe!
+              </div>
+              <div class="mobile-chart-area">
+                <canvas id="chart-toy-battery" aria-label="Toy battery level chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cloud-arch">
+        <div class="arch-step">
+          <div class="arch-icon">&#129528;&#128664;</div>
+          <span>Smart Toys</span>
+        </div>
+        <div class="arch-arrow">&#10236;<br/><small>Wi-Fi / MQTT</small></div>
+        <div class="arch-step">
+          <div class="arch-icon">&#9729;&#65039;</div>
+          <span>IoT Cloud</span>
+        </div>
+        <div class="arch-arrow">&#10236;</div>
+        <div class="arch-step">
+          <div class="arch-icon">&#128241;</div>
+          <span>Mobile App</span>
+        </div>
+        <div class="arch-arrow">&#10236;</div>
+        <div class="arch-step">
+          <div class="arch-icon">&#128202;</div>
+          <span>Analytics</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEVICES PANEL -->
+    <section class="tab-panel" id="panel-devices" role="tabpanel" aria-labelledby="tab-devices">
+      <div class="devices-grid">
+
+        <div class="device-card" id="dev-arduino">
+          <div class="device-header">
+            <div class="device-chip" aria-hidden="true">&#128306;</div>
+            <div>
+              <h2 class="device-name">Arduino Nano</h2>
+              <span class="device-mcu">ATmega328P @ 16 MHz</span>
+            </div>
+            <div class="device-online-badge">Online</div>
+          </div>
+          <div class="device-specs">
+            <div class="spec-row"><span class="spec-k">Digital Pins</span><span class="spec-v">D0 &ndash; D13 (14 pins)</span></div>
+            <div class="spec-row"><span class="spec-k">Analog Pins</span><span class="spec-v">A0 &ndash; A7 (8 pins)</span></div>
+            <div class="spec-row"><span class="spec-k">Flash</span><span class="spec-v">32 KB</span></div>
+            <div class="spec-row"><span class="spec-k">SRAM</span><span class="spec-v">2 KB</span></div>
+            <div class="spec-row"><span class="spec-k">Clock</span><span class="spec-v">16 MHz Crystal</span></div>
+            <div class="spec-row"><span class="spec-k">Power</span><span class="spec-v">5V / 3.3V via USB</span></div>
+          </div>
+          <div class="device-sensors-list">
+            <span class="sensor-tag">&#127777;&#65039; Temp Sensor</span>
+            <span class="sensor-tag">&#128225; Motion Sensor</span>
+            <span class="sensor-tag">&#127908; Microphone</span>
+            <span class="sensor-tag">&#128205; GPS</span>
+          </div>
+          <div class="device-chart-mini">
+            <canvas id="chart-arduino-load" aria-label="Arduino CPU load chart"></canvas>
+          </div>
+        </div>
+
+        <div class="device-card" id="dev-rpi">
+          <div class="device-header">
+            <div class="device-chip" aria-hidden="true">&#129400;</div>
+            <div>
+              <h2 class="device-name">Raspberry Pi 4</h2>
+              <span class="device-mcu">Broadcom BCM2711 &ndash; 4-core ARM</span>
+            </div>
+            <div class="device-online-badge">Online</div>
+          </div>
+          <div class="device-specs">
+            <div class="spec-row"><span class="spec-k">CPU</span><span class="spec-v">BCM2711 Quad-core 1.5 GHz</span></div>
+            <div class="spec-row"><span class="spec-k">RAM</span><span class="spec-v">4 GB LPDDR4</span></div>
+            <div class="spec-row"><span class="spec-k">GPIO</span><span class="spec-v">40-pin Header</span></div>
+            <div class="spec-row"><span class="spec-k">USB</span><span class="spec-v">2&times; USB 3.0, 2&times; USB 2.0</span></div>
+            <div class="spec-row"><span class="spec-k">Network</span><span class="spec-v">Wi-Fi + BT + Gigabit LAN</span></div>
+            <div class="spec-row"><span class="spec-k">Power</span><span class="spec-v">USB-C 5V / 3A</span></div>
+          </div>
+          <div class="device-sensors-list">
+            <span class="sensor-tag">&#128161; GPIO17 LED</span>
+            <span class="sensor-tag">&#128268; 330&Omega; Resistor</span>
+            <span class="sensor-tag">&#128247; Camera CSI</span>
+            <span class="sensor-tag">&#128421;&#65039; HDMI</span>
+          </div>
+          <div class="device-chart-mini">
+            <canvas id="chart-rpi-cpu" aria-label="Raspberry Pi CPU usage chart"></canvas>
+          </div>
+        </div>
+
+        <div class="device-card" id="dev-esp">
+          <div class="device-header">
+            <div class="device-chip" aria-hidden="true">&#128225;</div>
+            <div>
+              <h2 class="device-name">NodeMCU ESP8266</h2>
+              <span class="device-mcu">Tensilica L106 @ 80 MHz</span>
+            </div>
+            <div class="device-online-badge">Online</div>
+          </div>
+          <div class="device-specs">
+            <div class="spec-row"><span class="spec-k">Wi-Fi</span><span class="spec-v">802.11 b/g/n</span></div>
+            <div class="spec-row"><span class="spec-k">Flash</span><span class="spec-v">4 MB</span></div>
+            <div class="spec-row"><span class="spec-k">GPIO</span><span class="spec-v">11 digital I/O</span></div>
+            <div class="spec-row"><span class="spec-k">Protocol</span><span class="spec-v">MQTT / HTTP</span></div>
+            <div class="spec-row"><span class="spec-k">Platform</span><span class="spec-v">ThingSpeak Cloud</span></div>
+            <div class="spec-row"><span class="spec-k">Power</span><span class="spec-v">3.3V / Micro-USB</span></div>
+          </div>
+          <div class="device-sensors-list">
+            <span class="sensor-tag">&#127807; Soil Moisture</span>
+            <span class="sensor-tag">&#127777;&#65039; DHT11</span>
+            <span class="sensor-tag">&#9889; Relay</span>
+            <span class="sensor-tag">&#128166; Water Pump</span>
+          </div>
+          <div class="device-chart-mini">
+            <canvas id="chart-esp-signal" aria-label="ESP8266 Wi-Fi signal strength chart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GPIO Pinout Visual -->
+      <div class="gpio-section">
+        <h2 class="section-title">Raspberry Pi GPIO &ndash; LED Wiring Simulation</h2>
+        <div class="gpio-layout">
+          <div class="gpio-board">
+            <div class="gpio-header-label">40-Pin GPIO Header</div>
+            <div class="gpio-pins" id="gpio-pins" aria-label="GPIO pin layout"></div>
+          </div>
+          <div class="gpio-circuit">
+            <div class="circuit-label">GPIO17 &rarr; 330&Omega; &rarr; LED &rarr; GND</div>
+            <div class="circuit-diagram">
+              <div class="circuit-pin gpio17-pin">GPIO17</div>
+              <div class="circuit-wire yellow-wire"></div>
+              <div class="circuit-resistor">330&Omega;</div>
+              <div class="circuit-wire yellow-wire"></div>
+              <div class="circuit-led" id="circuit-led" aria-label="LED indicator">
+                <div class="led-glow" id="led-glow"></div>
+              </div>
+              <div class="circuit-wire black-wire"></div>
+              <div class="circuit-pin gnd-pin">GND</div>
+            </div>
+            <button class="led-toggle-btn" id="led-toggle-btn">Toggle LED</button>
+            <span class="led-state-label" id="led-state-label">LED: OFF</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <p>IoT Sensor Dashboard &middot; Arduino Nano, Raspberry Pi 4 &amp; NodeMCU ESP8266 &middot; Data refreshes every <span id="refresh-interval">2s</span></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
