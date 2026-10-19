@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Exam Study Guide - Units 3, 4, 5</title>
+  <meta name="description" content="Complete IoT exam study guide covering Arduino, NodeMCU, Raspberry Pi, and IoT Cloud. Units 3,4,5 with full exam answers, code, circuit diagrams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="study-style.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" tabindex="-1" hidden>
+    <button class="lb-close" id="lb-close" aria-label="Close">&#10005;</button>
+    <a class="lb-download" id="lb-download" aria-label="Download image" download>&#11015; Download</a>
+    <div class="lb-inner">
+      <img id="lb-img" src="" alt="" />
+      <p id="lb-caption"></p>
+    </div>
+  </div>
+
+  <!-- Search modal -->
+  <div class="search-modal" id="search-modal" role="dialog" aria-modal="true" aria-label="Search" hidden>
+    <div class="search-box">
+      <div class="search-row">
+        <span aria-hidden="true" style="font-size:18px">&#128269;</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Search questions, topics, code..." autocomplete="off" aria-label="Search" />
+        <kbd class="kbd-esc" aria-label="Press Escape to close">Esc</kbd>
+      </div>
+      <ul class="search-results" id="search-results" role="listbox"></ul>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header no-print" role="banner">
+    <div class="hdr-inner">
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <a class="site-logo nav-link" data-page="home" href="#" aria-label="IoT Study Guide Home">
+        <span aria-hidden="true">&#128225;</span> IoT Study Guide
+      </a>
+      <nav class="hdr-nav" aria-label="Primary navigation">
+        <button class="nav-pill" data-page="unit" data-unit="unit-3" aria-label="Unit 3: Arduino and NodeMCU">Unit 3</button>
+        <button class="nav-pill" data-page="unit" data-unit="unit-4" aria-label="Unit 4: Raspberry Pi">Unit 4</button>
+        <button class="nav-pill" data-page="unit" data-unit="unit-5" aria-label="Unit 5: IoT Cloud">Unit 5</button>
+        <button class="nav-pill" data-page="unit" data-unit="two-marks" aria-label="2-Mark Questions">2-Marks</button>
+        <button class="nav-pill nav-pill-flashcard" data-page="flashcards" aria-label="Flashcards">&#127083; Flash</button>
+        <button class="nav-pill nav-pill-revision" data-page="revision" aria-label="Revision Cheat Sheet">&#9889; Cheat</button>
+      </nav>
+      <div class="hdr-actions">
+        <button class="icon-btn" id="search-trigger" aria-label="Search (Ctrl+K)">
+          <span aria-hidden="true">&#128269;</span>
+          <kbd class="no-mobile" aria-hidden="true">Ctrl+K</kbd>
+        </button>
+        <button class="icon-btn" id="theme-toggle" aria-label="Toggle dark mode">
+          <span id="theme-icon" aria-hidden="true">&#127769;</span>
+        </button>
+        <button class="icon-btn" id="bookmarks-btn" data-page="bookmarks" aria-label="Bookmarks">
+          <span aria-hidden="true">&#128278;</span>
+        </button>
+        <button class="icon-btn" id="progress-btn" aria-label="Overall progress">
+          <span id="progress-text">0%</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile drawer -->
+  <div class="drawer-overlay" id="drawer-overlay" aria-hidden="true"></div>
+  <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+    <div class="drawer-hdr">
+      <span>&#128225; IoT Study Guide</span>
+      <button id="drawer-close" aria-label="Close navigation">&#10005;</button>
+    </div>
+    <div id="drawer-body"></div>
+  </nav>
+
+  <!-- Main layout -->
+  <div class="layout" id="layout">
+    <!-- Left sidebar (desktop) -->
+    <aside class="sidebar no-print" id="sidebar" aria-label="Question navigation">
+      <div id="sidebar-body"></div>
+    </aside>
+
+    <!-- Page content -->
+    <main class="page-content" id="main-content" tabindex="-1">
+      <div id="page-root">
+        <!-- rendered by JS -->
+      </div>
+    </main>
+
+    <!-- Right TOC (desktop, question pages only) -->
+    <aside class="toc-col no-print" id="toc-col" aria-label="On this page" hidden>
+      <div class="toc-sticky">
+        <p class="toc-label">On this page</p>
+        <nav id="toc-nav" aria-label="Table of contents"></nav>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Mobile bottom bar (question pages) -->
+  <div class="bottom-bar no-print" id="bottom-bar" hidden>
+    <button class="bb-btn" id="bb-prev" aria-label="Previous question">&#8592; Prev</button>
+    <button class="bb-btn bb-done" id="bb-done" aria-label="Mark as done">&#10003; Done</button>
+    <button class="bb-btn" id="bb-next" aria-label="Next question">Next &#8594;</button>
+  </div>
+
+  <script src="study-data.js"></script>
+  <script src="study-app.js"></script>
+</body>
+</html>
